@@ -1,0 +1,150 @@
+"use client";
+
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getAggregation, getAggregationHistory } from "@/lib/api";
+import AggregatedBarChart from "@/components/charts/AggregatedBarChart";
+import TrendLineChart from "@/components/charts/TrendLineChart";
+import { formatDate, ELECTION_TYPE_LABELS } from "@/lib/utils";
+import { CalendarDays, RefreshCw } from "lucide-react";
+
+const ELECTION_TYPES = ["governor", "senator"];
+
+export default function DashboardPage() {
+  const [electionType, setElectionType] = useState("governor");
+  const [round, setRound] = useState(1);
+
+  const { data: aggregation, isLoading: aggLoading } = useQuery({
+    queryKey: ["aggregation", electionType, round],
+    queryFn: () => getAggregation(electionType, round),
+    refetchInterval: 5 * 60 * 1000,
+  });
+
+  const { data: history, isLoading: histLoading } = useQuery({
+    queryKey: ["history", electionType, round],
+    queryFn: () => getAggregationHistory(electionType, round),
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Placar Agregado</h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Média ponderada das pesquisas eleitorais do Espírito Santo
+          </p>
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex rounded-lg border overflow-hidden">
+            {ELECTION_TYPES.map((et) => (
+              <button
+                key={et}
+                onClick={() => setElectionType(et)}
+                className={`px-4 py-1.5 text-sm font-medium transition-colors ${
+                  electionType === et
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                {ELECTION_TYPE_LABELS[et] ?? et}
+              </button>
+            ))}
+          </div>
+          <div className="flex rounded-lg border overflow-hidden">
+            {[1, 2].map((r) => (
+              <button
+                key={r}
+                onClick={() => setRound(r)}
+                className={`px-4 py-1.5 text-sm font-medium transition-colors ${
+                  round === r
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                {r}º Turno
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Aggregation chart */}
+      <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-semibold text-gray-900">
+            Intenção de voto — {ELECTION_TYPE_LABELS[electionType]} ({round}º turno)
+          </h2>
+          {aggregation?.last_poll_date && (
+            <span className="flex items-center gap-1 text-xs text-gray-500">
+              <CalendarDays className="w-3.5 h-3.5" />
+              Última pesquisa: {formatDate(aggregation.last_poll_date)}
+            </span>
+          )}
+        </div>
+
+        {aggLoading ? (
+          <div className="flex items-center justify-center h-40 text-gray-400">
+            <RefreshCw className="w-5 h-5 animate-spin mr-2" /> Carregando...
+          </div>
+        ) : aggregation?.standings.length === 0 ? (
+          <p className="text-gray-400 text-center py-12">
+            Nenhuma pesquisa disponível para esta categoria.
+          </p>
+        ) : (
+          <AggregatedBarChart standings={aggregation?.standings ?? []} />
+        )}
+      </div>
+
+      {/* Standings detail cards */}
+      {aggregation && aggregation.standings.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {[...aggregation.standings]
+            .sort((a, b) => b.aggregated_pct - a.aggregated_pct)
+            .map((s, i) => (
+              <div
+                key={s.candidate_id}
+                className="bg-white rounded-xl shadow-sm border p-4 flex items-center gap-4"
+              >
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+                  style={{ backgroundColor: s.color_hex ?? "#3b82f6" }}
+                >
+                  {i + 1}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-gray-900 truncate">
+                    {s.candidate_name}
+                  </div>
+                  <div className="text-xs text-gray-500">{s.party}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gray-900">
+                    {s.aggregated_pct.toFixed(1)}%
+                  </div>
+                  <div className="text-xs text-gray-400">{s.poll_count} pesq.</div>
+                </div>
+              </div>
+            ))}
+        </div>
+      )}
+
+      {/* Trend chart */}
+      <div className="bg-white rounded-xl shadow-sm border p-6">
+        <h2 className="font-semibold text-gray-900 mb-4">Evolução histórica</h2>
+        {histLoading ? (
+          <div className="flex items-center justify-center h-40 text-gray-400">
+            <RefreshCw className="w-5 h-5 animate-spin mr-2" /> Carregando...
+          </div>
+        ) : history && history.candidates.length > 0 ? (
+          <TrendLineChart history={history} />
+        ) : (
+          <p className="text-gray-400 text-center py-12">
+            Dados históricos não disponíveis.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
