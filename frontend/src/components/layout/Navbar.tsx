@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { BarChart2, TrendingUp, BookOpen, Building2, GitCompare, Settings } from "lucide-react";
+import { BarChart2, TrendingUp, BookOpen, Building2, GitCompare } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Placar", icon: BarChart2 },
@@ -42,18 +42,6 @@ export default function Navbar() {
                 <span className="hidden md:inline">{label}</span>
               </Link>
             ))}
-            <Link
-              href="/admin"
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ml-2",
-                pathname.startsWith("/admin")
-                  ? "bg-gray-800 text-white"
-                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
-              )}
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden md:inline">Admin</span>
-            </Link>
           </nav>
         </div>
       </div>
