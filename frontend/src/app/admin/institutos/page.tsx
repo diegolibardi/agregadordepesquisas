@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getInstitutes, adminCreateInstitute, adminUpdateInstitute } from "@/lib/api";
+import { getInstitutes, adminCreateInstitute, adminUpdateInstitute, adminDeleteInstitute } from "@/lib/api";
 import type { InstituteOut } from "@/types/api";
-import { Plus, Edit2, Save, X } from "lucide-react";
+import { Plus, Edit2, Save, X, Trash2 } from "lucide-react";
 
 const emptyForm = {
   name: "", slug: "", credibility_score: 1.0, website_url: "",
@@ -16,6 +16,7 @@ export default function AdminInstitutosPage() {
   const [isNew, setIsNew] = useState(false);
   const [form, setForm] = useState<typeof emptyForm>(emptyForm);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const qc = useQueryClient();
 
   const { data: institutes, isLoading } = useQuery({
@@ -52,6 +53,14 @@ export default function AdminInstitutosPage() {
       is_active: inst.is_active,
     });
   };
+
+  const deleteInstitute = useMutation({
+    mutationFn: (id: number) => adminDeleteInstitute(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["institutes-all"] });
+      setConfirmDelete(null);
+    },
+  });
 
   const startNew = () => {
     setIsNew(true);
@@ -177,12 +186,37 @@ export default function AdminInstitutosPage() {
                     <span className={`w-2 h-2 rounded-full inline-block ${inst.is_active ? "bg-green-500" : "bg-gray-300"}`} />
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => startEdit(inst)}
-                      className="inline-flex items-center gap-1 text-blue-600 hover:underline text-xs"
-                    >
-                      <Edit2 className="w-3.5 h-3.5" /> Editar
-                    </button>
+                    <div className="flex items-center justify-end gap-3">
+                      <button
+                        onClick={() => startEdit(inst)}
+                        className="inline-flex items-center gap-1 text-blue-600 hover:underline text-xs"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" /> Editar
+                      </button>
+                      {confirmDelete === inst.id ? (
+                        <span className="flex items-center gap-1">
+                          <button
+                            onClick={() => deleteInstitute.mutate(inst.id)}
+                            className="text-xs text-red-600 font-medium hover:underline"
+                          >
+                            Confirmar
+                          </button>
+                          <button
+                            onClick={() => setConfirmDelete(null)}
+                            className="text-xs text-gray-400 hover:underline"
+                          >
+                            Cancelar
+                          </button>
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmDelete(inst.id)}
+                          className="text-gray-400 hover:text-red-600 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

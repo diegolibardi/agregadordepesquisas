@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getPolls, getInstitutes, getCandidates, adminDeletePoll, adminUpdatePoll } from "@/lib/api";
 import { formatDate, ELECTION_TYPE_LABELS } from "@/lib/utils";
-import { Trash2, CheckCircle, RefreshCw, Plus } from "lucide-react";
+import { Trash2, CheckCircle, RefreshCw, Plus, Edit2 } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminPesquisasPage() {
@@ -105,6 +105,12 @@ export default function AdminPesquisasPage() {
                           className="text-xs text-blue-600 hover:underline"
                         >
                           Ver
+                        </Link>
+                        <Link
+                          href={`/admin/pesquisas/${poll.id}/editar`}
+                          className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-blue-600 hover:underline"
+                        >
+                          <Edit2 className="w-3 h-3" /> Editar
                         </Link>
                         {confirmDelete === poll.id ? (
                           <span className="flex items-center gap-1">

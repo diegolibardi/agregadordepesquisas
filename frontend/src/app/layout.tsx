@@ -22,10 +22,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        <title>Agregador de Pesquisas Eleitorais — ES</title>
+        <title>Agregador de Pesquisas Capixabas - 2026</title>
         <meta
           name="description"
-          content="Agregador de pesquisas eleitorais do Espírito Santo"
+          content="Agregador de Pesquisas Capixabas - 2026"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
@@ -34,7 +34,7 @@ export default function RootLayout({
           <Navbar />
           <main className="min-h-screen bg-gray-50">{children}</main>
           <footer className="bg-white border-t py-4 text-center text-sm text-gray-500">
-            Governo do Estado do Espírito Santo — Agregador de Pesquisas Eleitorais
+            Agregador de Pesquisas Capixabas — Eleições 2026
           </footer>
         </QueryClientProvider>
       </body>

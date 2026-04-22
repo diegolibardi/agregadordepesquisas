@@ -112,6 +112,10 @@ export async function adminUpdateInstitute(id: number, data: unknown) {
   return res;
 }
 
+export async function adminDeleteInstitute(id: number) {
+  await adminClient.delete(`/admin/institutes/${id}`);
+}
+
 export async function adminCreateCandidate(data: unknown) {
   const { data: res } = await adminClient.post("/admin/candidates", data);
   return res;

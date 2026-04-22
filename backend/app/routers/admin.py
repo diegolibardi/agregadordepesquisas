@@ -38,6 +38,16 @@ async def update_institute(
     return inst
 
 
+@router.delete("/institutes/{institute_id}", status_code=204, dependencies=[Depends(_require_admin_key)])
+async def delete_institute(institute_id: int, db: AsyncSession = Depends(get_db)):
+    from app.models.institute import Institute
+    inst = await db.get(Institute, institute_id)
+    if not inst:
+        raise HTTPException(status_code=404, detail="Institute not found")
+    await db.delete(inst)
+    await db.commit()
+
+
 # --- Candidates ---
 
 @router.post("/candidates", response_model=CandidateOut, dependencies=[Depends(_require_admin_key)])

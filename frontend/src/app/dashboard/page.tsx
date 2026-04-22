@@ -6,7 +6,8 @@ import { getAggregation, getAggregationHistory } from "@/lib/api";
 import AggregatedBarChart from "@/components/charts/AggregatedBarChart";
 import TrendLineChart from "@/components/charts/TrendLineChart";
 import { formatDate, ELECTION_TYPE_LABELS } from "@/lib/utils";
-import { CalendarDays, RefreshCw } from "lucide-react";
+import { CalendarDays, RefreshCw, GitCompare } from "lucide-react";
+import Link from "next/link";
 
 const ELECTION_TYPES = ["governor", "senator"];
 
@@ -129,6 +130,16 @@ export default function DashboardPage() {
             ))}
         </div>
       )}
+
+      {/* Comparar button */}
+      <div className="flex justify-end mb-4">
+        <Link
+          href="/comparar"
+          className="inline-flex items-center gap-2 px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
+        >
+          <GitCompare className="w-4 h-4" /> Comparar candidatos
+        </Link>
+      </div>
 
       {/* Trend chart */}
       <div className="bg-white rounded-xl shadow-sm border p-6">

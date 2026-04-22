@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
       <div className="bg-white p-8 rounded-xl shadow-sm border w-full max-w-sm">
         <div className="flex items-center gap-2 mb-2">
           <BarChart2 className="w-6 h-6 text-blue-700" />
-          <span className="font-bold text-blue-700 text-lg">Agregador ES</span>
+          <span className="font-bold text-blue-700 text-lg">Agregador Capixaba 2026</span>
         </div>
         <div className="flex items-center gap-2 mb-6 text-gray-500">
           <Lock className="w-4 h-4" />

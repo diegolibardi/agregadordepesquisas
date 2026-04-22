@@ -3,14 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { BarChart2, TrendingUp, BookOpen, Building2, GitCompare } from "lucide-react";
+import { BarChart2, TrendingUp, BookOpen } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Placar", icon: BarChart2 },
   { href: "/pesquisas", label: "Pesquisas", icon: BookOpen },
   { href: "/tendencias", label: "Tendências", icon: TrendingUp },
-  { href: "/institutos", label: "Institutos", icon: Building2 },
-  { href: "/comparar", label: "Comparar", icon: GitCompare },
 ];
 
 export default function Navbar() {
@@ -22,8 +20,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-14">
           <Link href="/dashboard" className="flex items-center gap-2 font-bold text-blue-700 text-lg">
             <BarChart2 className="w-5 h-5" />
-            <span className="hidden sm:inline">Agregador ES</span>
-            <span className="sm:hidden">ES</span>
+            <span className="hidden sm:inline">Agregador Capixaba 2026</span>
+            <span className="sm:hidden">ES26</span>
           </Link>
 
           <nav className="flex items-center gap-1">
