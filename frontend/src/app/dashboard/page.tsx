@@ -27,14 +27,24 @@ export default function DashboardPage() {
   });
 
   return (
+    <div>
+      {/* Hero banner */}
+      <div className="bg-es-blue-dark relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-es-blue-dark via-es-blue to-es-blue-light opacity-90" />
+        <div className="absolute bottom-0 left-0 right-0 h-1 flex">
+          <div className="flex-1 bg-es-blue-light" />
+          <div className="flex-1 bg-es-pink" />
+          <div className="flex-1 bg-white opacity-80" />
+        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">Placar Agregado</h1>
+          <p className="text-blue-200 text-sm mt-1">Média ponderada das pesquisas eleitorais do Espírito Santo</p>
+        </div>
+      </div>
+
     <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Placar Agregado</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Média ponderada das pesquisas eleitorais do Espírito Santo
-          </p>
-        </div>
+        <div />
 
         {/* Controls */}
         <div className="flex items-center gap-3 flex-wrap">
@@ -106,7 +116,7 @@ export default function DashboardPage() {
             .map((s, i) => (
               <div
                 key={s.candidate_id}
-                className="bg-white rounded-xl shadow-sm border p-4 flex items-center gap-4"
+                className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center gap-4 hover:shadow-md transition-shadow"
               >
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
@@ -135,7 +145,7 @@ export default function DashboardPage() {
       <div className="flex justify-end mb-4">
         <Link
           href="/comparar"
-          className="inline-flex items-center gap-2 px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-es-pink text-white rounded-lg text-sm font-semibold hover:bg-es-pink-dark transition-colors shadow-sm"
         >
           <GitCompare className="w-4 h-4" /> Comparar candidatos
         </Link>
@@ -156,6 +166,7 @@ export default function DashboardPage() {
           </p>
         )}
       </div>
+    </div>
     </div>
   );
 }

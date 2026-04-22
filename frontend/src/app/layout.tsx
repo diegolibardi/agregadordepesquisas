@@ -32,9 +32,14 @@ export default function RootLayout({
       <body>
         <QueryClientProvider client={queryClient}>
           <Navbar />
-          <main className="min-h-screen bg-gray-50">{children}</main>
-          <footer className="bg-white border-t py-4 text-center text-sm text-gray-500">
-            Agregador de Pesquisas Capixabas — Eleições 2026
+          <main className="min-h-screen bg-slate-50">{children}</main>
+          <footer className="bg-es-blue-dark border-t border-es-blue py-5 text-center">
+            <div className="flex justify-center gap-1 mb-2">
+              <div className="w-8 h-1 rounded-full bg-es-blue" />
+              <div className="w-8 h-1 rounded-full bg-es-pink" />
+              <div className="w-8 h-1 rounded-full bg-white opacity-60" />
+            </div>
+            <p className="text-blue-200 text-sm font-medium">Agregador de Pesquisas Capixabas — Eleições 2026</p>
           </footer>
         </QueryClientProvider>
       </body>
