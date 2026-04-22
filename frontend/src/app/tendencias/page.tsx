@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAggregationHistory } from "@/lib/api";
 import TrendLineChart from "@/components/charts/TrendLineChart";
-import { ELECTION_TYPE_LABELS } from "@/lib/utils";
+import { ELECTION_TYPE_LABELS, formatDate } from "@/lib/utils";
 import { RefreshCw } from "lucide-react";
 
 const ELECTION_TYPES = ["governor", "senator", "federal_deputy"];
