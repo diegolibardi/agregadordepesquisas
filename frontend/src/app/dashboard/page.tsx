@@ -39,6 +39,9 @@ export default function DashboardPage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-extrabold text-white tracking-tight">Placar Agregado</h1>
           <p className="text-blue-200 text-sm mt-1">Média ponderada das pesquisas eleitorais do Espírito Santo</p>
+          <span className="inline-block mt-2 px-3 py-1 bg-es-pink/20 border border-es-pink/40 text-es-pink-light text-xs font-semibold rounded-full tracking-wide">
+            Apenas cenários estimulados (lista de candidatos apresentada ao entrevistado)
+          </span>
         </div>
       </div>
 

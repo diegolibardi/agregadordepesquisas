@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { BarChart2, TrendingUp, BookOpen } from "lucide-react";
+import { BarChart2, BookOpen } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Placar", icon: BarChart2 },
   { href: "/pesquisas", label: "Pesquisas", icon: BookOpen },
-  { href: "/tendencias", label: "Tendências", icon: TrendingUp },
 ];
 
 export default function Navbar() {
