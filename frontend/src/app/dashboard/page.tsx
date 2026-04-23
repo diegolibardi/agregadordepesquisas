@@ -11,6 +11,22 @@ import Link from "next/link";
 
 const ELECTION_TYPES = ["governor"];
 
+const EXCLUDE_KEYWORDS = ["indeciso", "branco", "nulo", "não sabe", "nao sabe", "nenhum"];
+
+function filterStandings(standings: { candidate_name: string; [key: string]: unknown }[], round: number) {
+  if (round === 1) {
+    return standings.filter(
+      (s) => !EXCLUDE_KEYWORDS.some((kw) => s.candidate_name.toLowerCase().includes(kw))
+    );
+  }
+  return standings.filter(
+    (s) =>
+      s.candidate_name.toLowerCase().includes("pazolini") ||
+      s.candidate_name.toLowerCase().includes("ferraço") ||
+      s.candidate_name.toLowerCase().includes("ferraco")
+  );
+}
+
 export default function DashboardPage() {
   const [electionType, setElectionType] = useState("governor");
   const [round, setRound] = useState(1);
@@ -107,14 +123,14 @@ export default function DashboardPage() {
             Nenhuma pesquisa disponível para esta categoria.
           </p>
         ) : (
-          <AggregatedBarChart standings={aggregation?.standings ?? []} />
+          <AggregatedBarChart standings={filterStandings(aggregation?.standings ?? [], round)} />
         )}
       </div>
 
       {/* Standings detail cards */}
       {aggregation && aggregation.standings.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          {[...aggregation.standings]
+          {filterStandings([...aggregation.standings], round)
             .sort((a, b) => b.aggregated_pct - a.aggregated_pct)
             .map((s, i) => (
               <div
