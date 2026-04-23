@@ -9,7 +9,7 @@ import { formatDate, ELECTION_TYPE_LABELS } from "@/lib/utils";
 import { CalendarDays, RefreshCw, GitCompare } from "lucide-react";
 import Link from "next/link";
 
-const ELECTION_TYPES = ["governor", "senator"];
+const ELECTION_TYPES = ["governor"];
 
 export default function DashboardPage() {
   const [electionType, setElectionType] = useState("governor");

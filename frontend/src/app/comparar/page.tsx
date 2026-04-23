@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCandidates, getAggregationHistory } from "@/lib/api";
 import TrendLineChart from "@/components/charts/TrendLineChart";
-import { ELECTION_TYPE_LABELS } from "@/lib/utils";
 import type { HistoryResponse } from "@/types/api";
 
 export default function CompararPage() {
@@ -51,23 +50,6 @@ export default function CompararPage() {
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-3 mb-4">
-        <div className="flex rounded-lg border overflow-hidden">
-          {["governor", "senator"].map((et) => (
-            <button
-              key={et}
-              onClick={() => { setElectionType(et); setSelectedIds([]); }}
-              className={`px-4 py-1.5 text-sm font-medium transition-colors ${
-                electionType === et
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-            >
-              {ELECTION_TYPE_LABELS[et] ?? et}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* Candidate selection */}
       <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
@@ -106,7 +88,7 @@ export default function CompararPage() {
       {/* Chart */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h2 className="font-semibold text-gray-900 mb-4">
-          Evolução comparativa — {ELECTION_TYPE_LABELS[electionType]}
+          Evolução comparativa — Governador
         </h2>
         {filteredHistory && filteredHistory.candidates.length > 0 ? (
           <TrendLineChart history={filteredHistory} />
