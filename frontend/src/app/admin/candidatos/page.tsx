@@ -16,6 +16,7 @@ export default function AdminCandidatosPage() {
   const [editing, setEditing] = useState<(Partial<CandidateOut> & { id?: number }) | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [form, setForm] = useState<typeof emptyForm>(emptyForm);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const qc = useQueryClient();
 
   const { data: candidates, isLoading } = useQuery({
@@ -37,6 +38,11 @@ export default function AdminCandidatosPage() {
       qc.invalidateQueries({ queryKey: ["candidates-admin"] });
       setEditing(null);
       setIsNew(false);
+      setSaveError(null);
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
+      setSaveError(typeof msg === "string" ? msg : "Erro ao salvar. Verifique se o backend está ativo.");
     },
   });
 
@@ -124,6 +130,11 @@ export default function AdminCandidatosPage() {
               <label htmlFor="cand_active" className="text-sm text-gray-700">Ativo</label>
             </div>
           </div>
+          {saveError && (
+            <div className="mt-3 p-2 bg-red-50 border border-red-200 text-red-700 text-xs rounded">
+              {saveError}
+            </div>
+          )}
           <div className="flex gap-2 mt-4">
             <button
               onClick={() => save.mutate()}

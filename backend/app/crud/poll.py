@@ -78,8 +78,18 @@ async def update_poll(
     poll = await get_by_id(db, poll_id)
     if not poll:
         return None
-    for field, value in data.model_dump(exclude_unset=True).items():
+    update_data = data.model_dump(exclude_unset=True)
+    results_data = update_data.pop("results", None)
+    for field, value in update_data.items():
         setattr(poll, field, value)
+    if results_data is not None:
+        # Delete existing results and insert new ones
+        for existing in list(poll.results):
+            await db.delete(existing)
+        await db.flush()
+        for r in results_data:
+            new_result = PollResult(poll_id=poll.id, **r)
+            db.add(new_result)
     await db.flush()
     await db.refresh(poll)
     return poll

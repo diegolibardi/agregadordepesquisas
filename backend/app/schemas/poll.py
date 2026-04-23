@@ -65,14 +65,22 @@ class PollCreate(PollBase):
 
 
 class PollUpdate(BaseModel):
+    institute_id: int | None = None
+    election_type: str | None = None
+    round: int | None = None
     poll_date: date | None = None
+    fieldwork_start: date | None = None
+    fieldwork_end: date | None = None
+    published_date: date | None = None
     sample_size: int | None = None
     margin_of_error: float | None = None
     methodology: str | None = None
     source_url: str | None = None
+    raw_data_url: str | None = None
     tse_registered: str | None = None
     notes: str | None = None
     is_verified: bool | None = None
+    results: list[PollResultIn] | None = None
 
 
 class PollOut(PollBase):
