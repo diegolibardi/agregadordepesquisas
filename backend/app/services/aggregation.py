@@ -107,38 +107,35 @@ async def refresh_aggregation_cache(
     election_type: str,
     round: int = 1,
 ) -> list[AggregationCache]:
-    """Recompute and upsert aggregation cache for a given election + round."""
+    """Recompute and replace aggregation cache for a given election + round."""
     agg_map = await compute_aggregation(db, election_type, round)
     now = datetime.now(timezone.utc)
 
-    updated = []
-    for candidate_id, data in agg_map.items():
-        # Try to find existing cache entry
-        existing = await db.execute(
-            select(AggregationCache).where(
-                and_(
-                    AggregationCache.election_type == election_type,
-                    AggregationCache.round == round,
-                    AggregationCache.candidate_id == candidate_id,
-                )
+    # Delete ALL existing entries for this election+round to avoid stale data
+    old_entries = await db.execute(
+        select(AggregationCache).where(
+            and_(
+                AggregationCache.election_type == election_type,
+                AggregationCache.round == round,
             )
         )
-        cache_entry = existing.scalar_one_or_none()
+    )
+    for entry in old_entries.scalars().all():
+        await db.delete(entry)
+    await db.flush()
 
-        if cache_entry:
-            cache_entry.aggregated_pct = data["aggregated_pct"]
-            cache_entry.poll_count = data["poll_count"]
-            cache_entry.computed_at = now
-        else:
-            cache_entry = AggregationCache(
-                election_type=election_type,
-                round=round,
-                candidate_id=candidate_id,
-                aggregated_pct=data["aggregated_pct"],
-                poll_count=data["poll_count"],
-                computed_at=now,
-            )
-            db.add(cache_entry)
+    # Insert fresh entries for all candidates in the new computation
+    updated = []
+    for candidate_id, data in agg_map.items():
+        cache_entry = AggregationCache(
+            election_type=election_type,
+            round=round,
+            candidate_id=candidate_id,
+            aggregated_pct=data["aggregated_pct"],
+            poll_count=data["poll_count"],
+            computed_at=now,
+        )
+        db.add(cache_entry)
         updated.append(cache_entry)
 
     await db.flush()

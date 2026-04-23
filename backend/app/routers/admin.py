@@ -86,6 +86,7 @@ async def update_poll(
     poll = await crud.poll.update_poll(db, poll_id, data)
     if not poll:
         raise HTTPException(status_code=404, detail="Poll not found")
+    await refresh_aggregation_cache(db, poll.election_type, poll.round)
     return PollOut(
         **{c: getattr(poll, c) for c in poll.__table__.columns.keys()},
         results=poll.results,
@@ -95,9 +96,12 @@ async def update_poll(
 
 @router.delete("/polls/{poll_id}", status_code=204, dependencies=[Depends(_require_admin_key)])
 async def delete_poll(poll_id: int, db: AsyncSession = Depends(get_db)):
-    deleted = await crud.poll.delete_poll(db, poll_id)
-    if not deleted:
+    poll = await crud.poll.get_by_id(db, poll_id)
+    if not poll:
         raise HTTPException(status_code=404, detail="Poll not found")
+    election_type, round_ = poll.election_type, poll.round
+    await crud.poll.delete_poll(db, poll_id)
+    await refresh_aggregation_cache(db, election_type, round_)
 
 
 # --- Aggregation ---
