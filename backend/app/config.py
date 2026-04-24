@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     SCRAPER_API_KEY: str = "change-me-scraper-key"
     CORS_ORIGINS: str = "http://localhost:3000"
     SCRAPER_INTERVAL_HOURS: int = 24
-    AGGREGATION_LAMBDA: float = 0.05  # recency decay: ~14-day half-life
+    AGGREGATION_LAMBDA: float = 0.02  # recency decay: ~35-day half-life
     APP_VERSION: str = "1.0.0"
 
     @property

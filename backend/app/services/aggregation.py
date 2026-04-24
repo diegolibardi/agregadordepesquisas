@@ -44,8 +44,6 @@ async def compute_aggregation(
     """
     Returns a mapping of candidate_id -> {aggregated_pct, poll_count, candidate}
     """
-    if reference_date is None:
-        reference_date = date.today()
     if lam is None:
         lam = settings.AGGREGATION_LAMBDA
 
@@ -65,6 +63,13 @@ async def compute_aggregation(
         .order_by(Poll.poll_date.desc())
     )
     polls_list = list(polls.scalars().all())
+
+    # Use latest poll date as reference (not today) so weights don't drift over time
+    if reference_date is None:
+        if polls_list:
+            reference_date = max(p.poll_date for p in polls_list)
+        else:
+            reference_date = date.today()
 
     # candidate_id -> weighted sum + total weight + count
     weighted: dict[int, dict] = {}
