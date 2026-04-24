@@ -6,7 +6,7 @@ import { getAggregation, getAggregationHistory } from "@/lib/api";
 import AggregatedBarChart from "@/components/charts/AggregatedBarChart";
 import TrendLineChart from "@/components/charts/TrendLineChart";
 import { formatDate, ELECTION_TYPE_LABELS } from "@/lib/utils";
-import { CalendarDays, RefreshCw, GitCompare } from "lucide-react";
+import { CalendarDays, RefreshCw, GitCompare, Info } from "lucide-react";
 import type { AggregatedStanding } from "@/types/api";
 import Link from "next/link";
 
@@ -192,6 +192,57 @@ export default function DashboardPage() {
           </p>
         )}
       </div>
+
+      {/* Metodologia */}
+      <details className="group bg-gray-50 border border-gray-200 rounded-xl overflow-hidden mt-4">
+        <summary className="flex items-center gap-2 px-5 py-4 cursor-pointer select-none list-none text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+          <Info className="w-4 h-4 text-es-blue flex-shrink-0" />
+          Como calculamos a média?
+          <span className="ml-auto text-xs text-gray-400 group-open:hidden">Ver explicação ▾</span>
+          <span className="ml-auto text-xs text-gray-400 hidden group-open:inline">Fechar ▴</span>
+        </summary>
+
+        <div className="px-5 pb-5 pt-1 text-sm text-gray-600 space-y-4 border-t border-gray-200">
+          <p>
+            O placar exibido é uma <strong className="text-gray-800">média ponderada</strong> das pesquisas eleitorais disponíveis.
+            Cada pesquisa recebe um peso composto por três fatores:
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="bg-white rounded-lg border border-gray-100 p-3">
+              <div className="text-xs font-semibold text-es-blue uppercase tracking-wide mb-1">Credibilidade</div>
+              <p className="text-xs text-gray-500">
+                Nota de <strong>0 a 1</strong> atribuída a cada instituto com base em histórico, transparência e metodologia declarada.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-100 p-3">
+              <div className="text-xs font-semibold text-es-blue uppercase tracking-wide mb-1">Tamanho da amostra</div>
+              <p className="text-xs text-gray-500">
+                <code className="bg-gray-100 px-1 rounded">min(n ÷ 1000, 1,0)</code> — pesquisas com 1.000+ entrevistados recebem peso máximo.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-100 p-3">
+              <div className="text-xs font-semibold text-es-blue uppercase tracking-wide mb-1">Recência</div>
+              <p className="text-xs text-gray-500">
+                <code className="bg-gray-100 px-1 rounded">e^(−0,02 × dias)</code> — pesquisas mais recentes pesam mais. Meia-vida de ~35 dias.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white border border-gray-100 rounded-lg p-4 font-mono text-xs text-gray-700 space-y-1">
+            <div><span className="text-gray-400">// peso de cada pesquisa</span></div>
+            <div><strong>peso</strong> = credibilidade × (amostra ÷ 1000) × e^(−0,02 × dias)</div>
+            <div className="pt-1"><span className="text-gray-400">// percentual agregado do candidato</span></div>
+            <div><strong>média</strong> = Σ(% × peso) ÷ Σ(peso)</div>
+          </div>
+
+          <ul className="text-xs text-gray-500 space-y-1 list-disc list-inside">
+            <li>Apenas cenários <strong>estimulados</strong> são considerados (lista de candidatos apresentada ao entrevistado).</li>
+            <li>A contagem de "dias" é relativa à pesquisa mais recente, não à data de hoje.</li>
+            <li>Os números são recalculados automaticamente sempre que uma nova pesquisa é inserida.</li>
+          </ul>
+        </div>
+      </details>
     </div>
     </div>
   );
