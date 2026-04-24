@@ -7,6 +7,7 @@ import AggregatedBarChart from "@/components/charts/AggregatedBarChart";
 import TrendLineChart from "@/components/charts/TrendLineChart";
 import { formatDate, ELECTION_TYPE_LABELS } from "@/lib/utils";
 import { CalendarDays, RefreshCw, GitCompare } from "lucide-react";
+import type { AggregatedStanding } from "@/types/api";
 import Link from "next/link";
 
 const ELECTION_TYPES = ["governor"];
@@ -20,7 +21,7 @@ const EXCLUDE_KEYWORDS = [
   "indeciso", "branco", "nulo", "nao sabe", "nenhum", "opinou", "nao opinou", "ns/no", "ns/nr",
 ];
 
-function filterStandings(standings: { candidate_name: string; [key: string]: unknown }[], round: number) {
+function filterStandings(standings: AggregatedStanding[], round: number): AggregatedStanding[] {
   if (round === 1) {
     return standings.filter(
       (s) => !EXCLUDE_KEYWORDS.some((kw) => norm(s.candidate_name).includes(kw))
