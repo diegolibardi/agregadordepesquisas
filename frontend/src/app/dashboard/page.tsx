@@ -11,19 +11,25 @@ import Link from "next/link";
 
 const ELECTION_TYPES = ["governor"];
 
-const EXCLUDE_KEYWORDS = ["indeciso", "branco", "nulo", "não sabe", "nao sabe", "nenhum"];
+// Normalize: strip accents, lowercase
+function norm(s: string) {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+const EXCLUDE_KEYWORDS = [
+  "indeciso", "branco", "nulo", "nao sabe", "nenhum", "opinou", "nao opinou", "ns/no", "ns/nr",
+];
 
 function filterStandings(standings: { candidate_name: string; [key: string]: unknown }[], round: number) {
   if (round === 1) {
     return standings.filter(
-      (s) => !EXCLUDE_KEYWORDS.some((kw) => s.candidate_name.toLowerCase().includes(kw))
+      (s) => !EXCLUDE_KEYWORDS.some((kw) => norm(s.candidate_name).includes(kw))
     );
   }
   return standings.filter(
     (s) =>
-      s.candidate_name.toLowerCase().includes("pazolini") ||
-      s.candidate_name.toLowerCase().includes("ferraço") ||
-      s.candidate_name.toLowerCase().includes("ferraco")
+      norm(s.candidate_name).includes("pazolini") ||
+      norm(s.candidate_name).includes("ferraco")
   );
 }
 
